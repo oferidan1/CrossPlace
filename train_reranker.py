@@ -52,8 +52,7 @@ def parse_args():
 
     # ---- Backbone (frozen) ----
     a('--backbone_ckpt',    type=str,
-      default='checkpoints/dinov2-bge-ft-lora-ms/checkpoints/'
-              'lavpr_epoch(19)_step(15640)_R1[0.5663]_R5[0.8237].ckpt',
+      default='checkpoints/stage-1.ckpt',
       help='Frozen LaVPR_cross checkpoint')
 
     # ---- Pre-mined data ----
@@ -65,9 +64,7 @@ def parse_args():
     a('--image_root',       type=str,
       default='/home/shared/datasets/gsv_cities/')
     a('--train_csv',        type=str,
-      default='datasets/descriptions/gsv_cities_places.csv')
-    a('--mapping_path',     type=str,
-      default='datasets/gsv_cities_image_id_to_vocab_indices_v3.json')
+      default='datasets/descriptions/gsv_cities_places.csv')    
     a('--image_size',       type=int, default=224)
     a('--img_per_place',    type=int, default=4)
 
@@ -212,8 +209,7 @@ if __name__ == '__main__':
         train_image_root              = args.image_root,
         train_csv                     = args.train_csv,
         val_image_root                = args.val_image_root,
-        val_csv                       = args.val_csv,
-        mapping_json_path             = args.mapping_path,
+        val_csv                       = args.val_csv,        
     )
     train_datamodule.val_datamodule = val_datamodule
 

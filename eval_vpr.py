@@ -454,7 +454,7 @@ def get_queries_predictions(encoder_dim, database_descriptors, all_descriptors,
 
 
 @torch.no_grad()
-def rerank_by_lavpr(
+def rerank_predictions(
     model, test_ds, predictions, img_local_descs, text_local_desc,
     text_attentions, vision_descs=None, text_descs=None,
     max_rerank_k=20, rerank_batch=64, alpha=0.0, device='cuda',
@@ -589,92 +589,22 @@ def main(args):
     SIGLIP_MEAN_STD   = {'mean': [0.5, 0.5, 0.5], 'std': [0.5, 0.5, 0.5]}
 
     dataset_mean_std = IMAGENET_MEAN_STD
-    if 'blip' in args.model_name.lower() or 'clip' in args.model_name.lower() \
-            or 'eva' in args.model_name.lower():
-        dataset_mean_std = BLIP_MEAN_STD
-    elif 'siglip' in args.model_name.lower():
-        dataset_mean_std = SIGLIP_MEAN_STD
-
+    
     model = LaVPR_wrapper(args)
     logger.info(f"VLM encoder dim: {model.encoder_dim}")
 
-    if args.cross_modal == 3:
-        num_img_tokens  = model.img_local_tokens
-        num_text_tokens = model.txt_local_tokens
-        txt_local_dim   = model.txt_local_dim        
-        img_local_dim   = model.img_local_dim
-        if args.reranker_filip:
-            txt_local_dim  = model.img_local_dim
-    else:
-        num_img_tokens  = 197
-        num_text_tokens = 77
-        txt_local_dim   = model.encoder_dim
-        img_local_dim   = 768
-
-    if args.data in ['amster', 'amstertime']:
-        args.database_folder = "/home/shared/datasets/amstertime/test/database"
-        args.queries_folder  = "/home/shared/datasets/amstertime/test/queries"
-        args.image_root      = "/home/shared/datasets/amstertime/test"
-        args.queries_csv     = "datasets/descriptions/amstertime_descriptions.csv"
-    elif args.data in ['pitts', 'pitts_test', 'pitts30k']:
-        args.database_folder = "/home/shared/datasets/pitts30k/images/test/database"
-        args.queries_folder  = "/home/shared/datasets/pitts30k/images/test/queries"
-        args.image_root      = "/home/shared/datasets/pitts30k/images/test"
-        args.queries_csv     = "datasets/descriptions/pitts30k_test_descriptions.csv"
-    elif args.data in ['pitts_val', 'pitts30k_val']:
-        args.database_folder = "/home/shared/datasets/pitts30k/images/val/database"
-        args.queries_folder  = "/home/shared/datasets/pitts30k/images/val/queries"
-        args.image_root      = "/home/shared/datasets/pitts30k/images/val"
-        #args.queries_csv     = "datasets/descriptions/pitts30k_val_800_queries.csv"
-        args.queries_csv     = "datasets/descriptions/pitts30k_val_descriptions.csv"
-    elif args.data in ['msls', 'msls_val']:
-        args.database_folder = "/home/shared/datasets/msls/val/database"
-        args.queries_folder  = "/home/shared/datasets/msls/val/query"
-        args.image_root      = "/home/shared/datasets/msls/val/"
-        args.queries_csv     = "datasets/descriptions/msls_val_descriptions.csv"
-    elif args.data == 'msls_challenge':
-        args.database_folder = "/home/shared/datasets/msls_challenge"
-        args.queries_folder  = None
-        args.image_root      = "/home/shared/datasets/msls_challenge/test"
-        args.queries_csv     = "datasets/descriptions/msls_challenge_descriptions.csv"
-    elif args.data == 'nordland':
-        args.database_folder = "/home/shared/datasets/nordland/test/database"
-        args.queries_folder  = "/home/shared/datasets/nordland/test/queries"
-        args.image_root      = "/home/shared/datasets/nordland/test"
-        args.queries_csv     = "datasets/descriptions/nordland_descriptions.csv"
-    elif args.data == 'sfxl':
-        args.database_folder = "/home/shared/datasets/SF-XL/processed/test/database"
-        args.image_root      = "/home/shared/datasets/SF-XL/processed/test"
-        eval_conditions = [
-            ("queries_v1", f"{args.image_root}/queries_v1", "datasets/descriptions/sfxl_queries_v1.csv"),
-            ("queries_v2", f"{args.image_root}/queries_v2", "datasets/descriptions/sfxl_queries_v2.csv"),
-            ("occlusion",  f"{args.image_root}/queries_occlusion", "datasets/descriptions/sfxl_queries_occlusion.csv"),
-            ("night",      f"{args.image_root}/queries_night", "datasets/descriptions/sfxl_queries_night.csv"),
-        ]
-    elif args.data in ['svox', 'svox_all']:
-        args.database_folder = "/home/shared/datasets/svox/images/test/gallery"
-        args.image_root      = "/home/shared/datasets/svox/images/test"
-        eval_conditions = [
-            ("Night",    f"{args.image_root}/queries_night",    "datasets/descriptions/svox_night.csv"),
-            ("Sun",      f"{args.image_root}/queries_sun",      "datasets/descriptions/svox_sun.csv"),
-            ("Rain",     f"{args.image_root}/queries_rain",     "datasets/descriptions/svox_rain.csv"),
-            ("Snow",     f"{args.image_root}/queries_snow",     "datasets/descriptions/svox_snow.csv"),
-            ("Overcast", f"{args.image_root}/queries_overcast", "datasets/descriptions/svox_overcast.csv"),
-        ]
-    elif args.data == 'sped':
-        args.database_folder = "/home/shared/datasets/SPEDTEST/test/database"
-        args.queries_folder  = "/home/shared/datasets/SPEDTEST/test/queries"
-        args.image_root      = "/home/shared/datasets/SPEDTEST/test"
-        args.queries_csv     = "datasets/descriptions/sped.csv"
+    
+    num_img_tokens  = model.img_local_tokens
+    num_text_tokens = model.txt_local_tokens
+    txt_local_dim   = model.txt_local_dim        
+    img_local_dim   = model.img_local_dim
 
     if 'eval_conditions' not in locals():
         eval_conditions = [(None, getattr(args, 'queries_folder', None),
                                   getattr(args, 'queries_csv', None))]
 
     max_results       = max(args.recall_values)
-    need_local        = (getattr(args, 'reranker',       False)
-                         or getattr(args, 'reranker_filip', False)
-                         or getattr(args, 'filip_retrieval', False))
+    need_local        = getattr(args, 'reranker',       False)                         
     stage1_cache_path = getattr(args, 'stage1_cache', None)
 
     db_vision_descriptors = None
@@ -812,7 +742,7 @@ def main(args):
                 and args.max_sim == 0:
             reranking_enabled     = True
             max_rerank_k          = min(args.max_rerank, max_results)
-            reranking_predictions, reranking_scores = rerank_by_lavpr(
+            reranking_predictions, reranking_scores = rerank_predictions(
                 model, test_ds, reranking_predictions,
                 img_local_descs, text_local_descs, text_attentions,
                 vision_descs=vision_descriptors, text_descs=text_descriptors,
@@ -823,9 +753,7 @@ def main(args):
 
         if not reranking_enabled and (
             bool(getattr(args, 'reranker',       False))
-            or bool(getattr(args, 'reranker_filip', False))
-            or bool(getattr(args, 'reranker_mllm',  False))
-            or bool(getattr(args, 'reranker_jev',   False))
+            
         ):
             reranking_enabled = True
 
@@ -879,8 +807,6 @@ def main(args):
                     all_reranking_recalls.append(reranking_recalls)
                     logger.info(f"{prefix}Retrieval Recall: {retrieval_recalls_str}")
                     logger.info(f"{prefix}Reranking Recall: {reranking_recalls_str}")
-                    print(f"{prefix}Retrieval Recall: {retrieval_recalls_str}")
-                    print(f"{prefix}Reranking Recall: {reranking_recalls_str}")
                     all_cond_results.append(
                         (cond_name or "Overall",
                          retrieval_recalls_str, reranking_recalls_str))

@@ -137,7 +137,7 @@ if __name__ == '__main__':
     trainer = pl.Trainer(
         accelerator='gpu',
         devices=[0],
-        default_root_dir='./LOGS/lavpr',
+        default_root_dir='./LOGS/cross_place',
         num_sanity_val_steps=0,
         max_epochs=args.epochs,
         check_val_every_n_epoch=1,

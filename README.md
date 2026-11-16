@@ -59,7 +59,7 @@ CrossPlace builds on [LaVPR](https://github.com/oferidan1/LaVPR), which provides
 Extract the extended descriptions before training or evaluating:
 
 ```bash
-unzip datasets/descriptions.zip -d datasets/descriptions
+unzip datasets/descriptions_extended.zip -d datasets/descriptions
 ```
 
 ## Training
