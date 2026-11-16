@@ -48,7 +48,7 @@ def _text_hidden_dim(model_name: str) -> int:
 # Main model
 # ---------------------------------------------------------------------------
 
-class LaVPR_cross(pl.LightningModule):
+class CrossPlace(pl.LightningModule):
 
     def __init__(
         self,

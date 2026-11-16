@@ -104,7 +104,7 @@ def parse_arguments():
     parser.add_argument("--lora_target_modules", nargs='+', default=["query", "value"], help="when not lora_all_linear, lora target modules")    
     parser.add_argument("--lora_r", type=int, default="64", help="lora_all_linear 0=no/1=yes")     
     parser.add_argument("--embeds_dim", type=int, default="768", help="embeds dimension")    
-    parser.add_argument("--cross_modal", type=int, default="3", help="cross modal 0=no/1=clip/2=clip ft/3=lavpr_cross")        
+    parser.add_argument("--cross_modal", type=int, default="3", help="cross modal 0=no/1=clip/2=clip ft/3=cross_place")        
     parser.add_argument("--reranker", type=int, default="0", help="reranker enabled")            
     parser.add_argument("--rerank_alpha", type=float, default="0", help="0=reranker only, 1=global only, 0.5=equal mix")          
     parser.add_argument("--bfloat16", type=int, default="0", help="bfloat16 or not")    

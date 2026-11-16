@@ -2,8 +2,7 @@ import torch
 import numpy as np
 import os
 import peft
-from model.LaVPR_cross import LaVPR_cross
-from model.LaVPR_reranker import LaVPR_reranker
+from model.cross_place import CrossPlace
 from transformers import AutoTokenizer, AutoModel, AutoProcessor
 from model.blip_model import BlipForImageTextRetrievalWrapper
 from transformers import BlipProcessor
@@ -20,10 +19,10 @@ class LaVPR_wrapper():
         self.cross_modal = args.cross_modal
 
         
-        # ---- LaVPR_cross or CrossModalRerankModule checkpoint ----
+        # ---- CrossPlace or CrossModalRerankModule checkpoint ----
         # If --reranker_lavpr is set, model_path points to the reranker ckpt
         # which contains the frozen backbone inside it. Load the backbone
-        # from there. Otherwise load LaVPR_cross directly.
+        # from there. Otherwise load CrossPlace directly.
         if getattr(args, 'reranker', False):
             from model.reranker_module import CrossModalRerankModule
             # Detect score head depth from state dict before loading
@@ -44,7 +43,7 @@ class LaVPR_wrapper():
             self.reranker_network = _reranker_module.reranker.eval().to(args.device)
             del _reranker_module
         else:
-            self.vlm_encoder = LaVPR_cross.load_from_checkpoint(
+            self.vlm_encoder = CrossPlace.load_from_checkpoint(
                 args.model_path,
                 map_location=args.device,
                 strict=True,
@@ -54,7 +53,7 @@ class LaVPR_wrapper():
             self.reranker_network = None
 
         # Expose local token dims for eval buffer allocation
-        #from model.LaVPR_cross import _IMAGE_ENCODER_DIM, _text_hidden_dim
+        #from model.CrossPlace import _IMAGE_ENCODER_DIM, _text_hidden_dim
         # img_key               = self.vlm_encoder.image_model_name
         # self.img_local_dim    = _IMAGE_ENCODER_DIM.get(img_key, 768)
         self.img_local_tokens = 256   # DINOv2-B at 224px (14x14 patches)

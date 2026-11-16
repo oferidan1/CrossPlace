@@ -1,7 +1,7 @@
 """
 reranker_module.py
 ==================
-Stage-2 reranker on top of a frozen LaVPR_cross backbone.
+Stage-2 reranker on top of a frozen CrossPlace backbone.
 
 Two reranker architectures available via --model_type:
 
@@ -18,7 +18,7 @@ Two reranker architectures available via --model_type:
   mean-pool queries → score_head → scalar
 
 Both share the same:
-  - Frozen LaVPR_cross backbone (DINOv2 + BGE)
+  - Frozen CrossPlace backbone (DINOv2 + BGE)
   - Precomputed local token input (no backbone at train time)
   - Margin / BCE / Listwise loss
   - Training loop and validation
@@ -30,14 +30,14 @@ import torch.nn as nn
 import torch.nn.functional as F
 import pytorch_lightning as pl
 
-from model.LaVPR_cross import LaVPR_cross, _dinov2_hidden_dim, _TEXT_ENCODER_DIM
+from model.cross_place import CrossPlace, _dinov2_hidden_dim, _TEXT_ENCODER_DIM
 
 
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _infer_dims(backbone: LaVPR_cross):
+def _infer_dims(backbone: CrossPlace):
     img_key = backbone.image_model_name
     txt_key = backbone.text_model_name.lower()
     img_dim = _dinov2_hidden_dim(img_key)
@@ -432,19 +432,19 @@ class CrossModalRerankModule(pl.LightningModule):
         self.save_hyperparameters()
 
         # ---- Backbone: this block replaces your old
-        #      self.backbone = LaVPR_cross.load_from_checkpoint(backbone_ckpt, ...)
+        #      self.backbone = CrossPlace.load_from_checkpoint(backbone_ckpt, ...)
         if backbone_hparams is not None:
             # Standalone ckpt: build architecture only; weights come from the state_dict
-            self.backbone = LaVPR_cross(**backbone_hparams)
+            self.backbone = CrossPlace(**backbone_hparams)
         else:
             # Training: start from the pretrained backbone
             assert backbone_ckpt is not None, "need backbone_ckpt or backbone_hparams"
-            self.backbone = LaVPR_cross.load_from_checkpoint(backbone_ckpt, map_location="cpu")
+            self.backbone = CrossPlace.load_from_checkpoint(backbone_ckpt, map_location="cpu")
             backbone_hparams = dict(self.backbone.hparams)
         self.hparams["backbone_hparams"] = backbone_hparams   # saved into future ckpts
 
         # # ---- Frozen backbone ----
-        # self.backbone = LaVPR_cross.load_from_checkpoint(
+        # self.backbone = CrossPlace.load_from_checkpoint(
         #     backbone_ckpt, map_location='cpu')
         if freeze_bn:
             for p in self.backbone.parameters():

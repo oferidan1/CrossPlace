@@ -5,7 +5,7 @@ import utils
 from dataloaders.GSVCitiesDataloader import GSVCitiesDataModule, IMAGENET_MEAN_STD
 import os
 import argparse
-from model.LaVPR_cross import LaVPR_cross
+from model.cross_place import CrossPlace
 
 
 def parse_arguments():
@@ -81,7 +81,7 @@ if __name__ == '__main__':
         val_csv=args.val_csv,     
     )
 
-    model = LaVPR_cross(
+    model = CrossPlace(
         text_model_name=args.text_model_name,
         image_model_name=args.image_model_name,
         embeds_dim=args.embeds_dim,
@@ -111,7 +111,7 @@ if __name__ == '__main__':
     )
 
     if args.resume is not None:
-        model = LaVPR_cross.load_from_checkpoint(args.resume)
+        model = CrossPlace.load_from_checkpoint(args.resume)
 
     model = model.to('cuda')
 
