@@ -109,8 +109,8 @@ def parse_args():
       help='[QFormer only] Number of learned query vectors')
 
     # ---- Loss ----
-    a('--loss_name',        type=str,   default='margin',
-      choices=['margin', 'bce'],
+    a('--loss_name',        type=str,   default='listwise',
+      choices=['margin', 'bce', 'listwise'],
       help='margin: ranking loss optimises R@1 directly. '
            'bce: binary CE, all positives contribute equally')
     a('--margin',           type=float, default=0.3,

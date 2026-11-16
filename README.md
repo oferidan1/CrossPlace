@@ -18,9 +18,6 @@
 
 Official implementation of **CrossPlace**, a new method for Cross-Modal Place Recognition (CMPR): given a natural-language description of a place, retrieve the matching image from a large geo-tagged database.
 
-<!-- TODO: add a teaser figure, e.g.
-<p align="center"><img src="assets/teaser.png" width="85%"></p>
--->
 
 ## Overview
 
@@ -34,7 +31,6 @@ Text-to-image place recognition still lags far behind its image-to-image counter
 The codebase has been tested with **PyTorch 2.9.0**, **CUDA 12.6**, and **xFormers**.
 
 ```bash
-git clone TODO_REPO_URL
 cd CrossPlace
 
 # Create and activate an environment (optional but recommended)
@@ -83,8 +79,7 @@ python train_cross.py \
 ### Stage 2: Reranker
 
 ```bash
-# TODO: add the arguments this script needs
-python train_reranker.py
+python train_reranker.py --model_type=cross_attn --n_layers=1 --d_modal=128 --n_heads=4 --loss_name=listwise --max_cands=50 
 ```
 
 Checkpoints and logs are saved automatically to the `logs/` directory.
@@ -95,7 +90,7 @@ Checkpoints and logs are saved automatically to the `logs/` directory.
 
 | Model | Backbone | Embedding dim | Download |
 | --- | --- | --- | --- |
-| CrossPlace | DINOv2 | 768 | [cross_place.ckpt](TODO_CHECKPOINT_LINK) |
+| CrossPlace | DINOv2 | 768 | [cross_place.ckpt](CHECKPOINT_LINK) |
 
 Place the checkpoint in `checkpoints/`.
 
@@ -124,11 +119,9 @@ python eval_vpr.py \
 | `--model_name` | Backbone architecture |
 | `--embeds_dim` | Dimension of the global embedding |
 | `--model_path` | Path to the trained checkpoint |
-| `--cross_modal` | TODO: explain the available modes and what `3` selects |
 | `--reranker` | Enables the second-stage reranker (`1`) or disables it (`0`) |
-| `--rerank_alpha` | TODO: explain, e.g. the weight between first-stage and reranking scores |
+| `--rerank_alpha` | Weight between first-stage and reranking scores |
 
-<!-- TODO: add one example command per benchmark (LaVPR, SVOX, SF-XL) -->
 
 ## Results
 
@@ -224,20 +217,6 @@ Recall@1 (%) on the standard cross-modal benchmarks, the condition-specific SVOX
   </tbody>
 </table>
 
-See the paper for the full comparison.
-
-## Citation
-
-If you find this work useful, please cite:
-
-```bibtex
-@article{TODO_crossplace,
-  title   = {CrossPlace: Towards Closing the Performance Gap in Cross-Modal Place Recognition},
-  author  = {TODO},
-  journal = {TODO},
-  year    = {TODO}
-}
-```
 
 ## Acknowledgements
 
@@ -248,6 +227,3 @@ This repository builds on several excellent open-source projects:
 - [GSV-Cities](https://github.com/amaralibey/gsv-cities): large-scale VPR training dataset.
 - [VPR-methods-evaluation](https://github.com/gmberton/VPR-methods-evaluation): standardized VPR evaluation framework.
 
-## License
-
-TODO: add a license (and a `LICENSE` file).
