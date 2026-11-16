@@ -23,3 +23,5 @@ timm
 gdown
 opencv-python
 kornia
+setuptools<82
+
