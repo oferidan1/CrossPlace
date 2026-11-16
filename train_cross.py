@@ -118,7 +118,7 @@ if __name__ == '__main__':
     if args.is_val:
         checkpoint_cb = ModelCheckpoint(
             monitor='pitts30k_val/R1',
-            filename='lavpr_epoch({epoch:02d})_step({step:04d})_R1[{pitts30k_val/R1:.4f}]_R5[{pitts30k_val/R5:.4f}]',
+            filename='crossplace_epoch({epoch:02d})_step({step:04d})_R1[{pitts30k_val/R1:.4f}]_R5[{pitts30k_val/R5:.4f}]',
             auto_insert_metric_name=False,
             save_weights_only=True,
             save_top_k=3,
@@ -127,7 +127,7 @@ if __name__ == '__main__':
         )
     else:
         checkpoint_cb = ModelCheckpoint(
-            filename='lavpr_epoch({epoch:02d})_step({step:04d})',
+            filename='crossplace_epoch({epoch:02d})_step({step:04d})',
             auto_insert_metric_name=False,
             save_weights_only=True,
             save_top_k=-1,

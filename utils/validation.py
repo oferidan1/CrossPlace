@@ -64,7 +64,7 @@ def get_validation_recalls_rerank(
     faiss_gpu=False, 
     dataset_name='dataset without name ?',
     # --- Reranking additions ---
-    rerank_model=None,          # Your LaVPR_reranker or CrossAttnClassifier model
+    rerank_model=None,          # Your reranker or CrossAttnClassifier model
     r_local_list=None,          # Gathered database img_local tensors [Num_Db, Li, D]
     q_local_list=None,          # Gathered query text_local tensors [Num_Q, Lt, D]
     q_attention_mask_list=None, # [Num_Q, Lt] attention/padding masks

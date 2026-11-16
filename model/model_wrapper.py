@@ -1,15 +1,7 @@
 import torch
-import numpy as np
-import os
-import peft
 from model.cross_place import CrossPlace
-from transformers import AutoTokenizer, AutoModel, AutoProcessor
-from model.blip_model import BlipForImageTextRetrievalWrapper
-from transformers import BlipProcessor
-import open_clip
 
-
-class LaVPR_wrapper():
+class Model_wrapper():
     def __init__(self, args):
         self.model_name  = args.model_name.lower()
         self.device      = args.device
@@ -20,7 +12,7 @@ class LaVPR_wrapper():
 
         
         # ---- CrossPlace or CrossModalRerankModule checkpoint ----
-        # If --reranker_lavpr is set, model_path points to the reranker ckpt
+        # If --reranker is set, model_path points to the reranker ckpt
         # which contains the frozen backbone inside it. Load the backbone
         # from there. Otherwise load CrossPlace directly.
         if getattr(args, 'reranker', False):
@@ -39,7 +31,7 @@ class LaVPR_wrapper():
                 freeze_bn = args.rerank_freeze_bn
             )
             self.vlm_encoder = _reranker_module.backbone.eval().to(args.device)
-            # Keep reranker network for later use in rerank_by_lavpr
+            # Keep reranker network for later use in rerank
             self.reranker_network = _reranker_module.reranker.eval().to(args.device)
             del _reranker_module
         else:
@@ -52,12 +44,7 @@ class LaVPR_wrapper():
             self.vlm_encoder = self.vlm_encoder.eval().to(args.device)
             self.reranker_network = None
 
-        # Expose local token dims for eval buffer allocation
-        #from model.CrossPlace import _IMAGE_ENCODER_DIM, _text_hidden_dim
-        # img_key               = self.vlm_encoder.image_model_name
-        # self.img_local_dim    = _IMAGE_ENCODER_DIM.get(img_key, 768)
         self.img_local_tokens = 256   # DINOv2-B at 224px (14x14 patches)
-        # self.txt_local_dim    = _text_hidden_dim(self.vlm_encoder.text_model_name)
         self.txt_local_tokens = 512   # BGE max sequence length
         self.img_local_dim    = self.vlm_encoder.image_proj.in_features
         self.txt_local_dim    = self.vlm_encoder.text_proj.in_features

@@ -11,7 +11,7 @@ from loguru import logger
 from torch.utils.data import DataLoader
 from torch.utils.data.dataset import Subset
 from tqdm import tqdm
-from model.LaVPR_wrapper import LaVPR_wrapper
+from model.model_wrapper import Model_wrapper
 import os
 from dataloaders.test_dataset import TestDataset
 from dataloaders.MapillaryTestDataset import MSLSTest
@@ -459,7 +459,7 @@ def rerank_predictions(
     text_attentions, vision_descs=None, text_descs=None,
     max_rerank_k=20, rerank_batch=64, alpha=0.0, device='cuda',
 ):
-    """LaVPR reranker. Returns (reranked_predictions, reranked_scores)."""
+    """reranker. Returns (reranked_predictions, reranked_scores)."""
     reranker = model.reranker_network
     if reranker is None:
         raise RuntimeError("reranker_network is None.")
@@ -474,25 +474,25 @@ def rerank_predictions(
     got_img_dim = img_local_descs.shape[-1]
     got_txt_dim = text_local_desc.shape[-1]
 
-    logger.info(f"LaVPR reranker  img_proj expects {img_proj_in}  "
+    logger.info(f"reranker  img_proj expects {img_proj_in}  "
                 f"got {got_img_dim}  |  "
                 f"txt_proj expects {txt_proj_in}  got {got_txt_dim}")
 
     if got_img_dim != img_proj_in:
         raise RuntimeError(
-            f"rerank_by_lavpr: img local dim mismatch — "
+            f"rerank: img local dim mismatch — "
             f"reranker expects {img_proj_in}, buffer has {got_img_dim}.")
     if got_txt_dim != txt_proj_in:
         raise RuntimeError(
-            f"rerank_by_lavpr: text local dim mismatch — "
+            f"rerank: text local dim mismatch — "
             f"reranker expects {txt_proj_in}, buffer has {got_txt_dim}.")
 
-    logger.info(f"LaVPR reranking top-{n_cand} for {num_q} queries  "
+    logger.info(f"reranking top-{n_cand} for {num_q} queries  "
                 f"(batch={rerank_batch}  alpha={alpha}  dtype={w_dtype})")
     reranked        = predictions.copy()
     reranked_scores = np.full((num_q, predictions.shape[1]), np.nan, dtype=np.float32)
 
-    for q_start in tqdm(range(0, num_q, rerank_batch), desc="LaVPR rerank"):
+    for q_start in tqdm(range(0, num_q, rerank_batch), desc="rerank"):
         t0    = time.perf_counter()
         q_end = min(q_start + rerank_batch, num_q)
         bsz   = q_end - q_start
@@ -554,9 +554,9 @@ def rerank_predictions(
             reranked[q_start + b, :n_cand]        = cand_idx[b][order]
             reranked_scores[q_start + b, :n_cand] = local_scores[b][order]
 
-        TIMING.record('rerank_lavpr_batch', bsz * n_cand, time.perf_counter() - t0)
+        TIMING.record('rerank_batch', bsz * n_cand, time.perf_counter() - t0)
 
-    logger.info("LaVPR reranking complete.")
+    logger.info("reranking complete.")
     return reranked, reranked_scores
 
 
@@ -590,7 +590,7 @@ def main(args):
 
     dataset_mean_std = IMAGENET_MEAN_STD
     
-    model = LaVPR_wrapper(args)
+    model = Model_wrapper(args)
     logger.info(f"VLM encoder dim: {model.encoder_dim}")
 
     
