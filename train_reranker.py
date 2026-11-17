@@ -53,7 +53,7 @@ def parse_args():
     # ---- Backbone (frozen) ----
     a('--backbone_ckpt',    type=str,
       default='checkpoints/stage-1.ckpt',
-      help='Frozen LaVPR_cross checkpoint')
+      help='Frozen CrossPlace checkpoint')
 
     # ---- Pre-mined data ----
     a('--triplets_json',    type=str, default='cache/gsv_triplets.json')
