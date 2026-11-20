@@ -79,7 +79,11 @@ python train_cross.py \
 ### Stage 2: Reranker
 
 ```bash
-python train_reranker.py --model_type=cross_attn --n_layers=1 --d_modal=128 --n_heads=4 --loss_name=listwise --max_cands=50 
+python train_reranker.py  --model_type=cross_attn \
+                          --n_layers=1 --d_modal=128 \
+                          --n_heads=4 \
+                          --loss_name=listwise \
+                          --max_cands=50 
 ```
 
 Checkpoints and logs are saved automatically to the `logs/` directory.
