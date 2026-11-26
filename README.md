@@ -4,13 +4,16 @@
 
 ### Towards Closing the Performance Gap in Cross-Modal Place Recognition
 
+[![arXiv](https://img.shields.io/badge/arXiv-2611.34877-b31b1b.svg)](https://arxiv.org/abs/2611.34877)
+
 [Overview](#overview) •
 [Setup](#setup) •
 [Datasets](#datasets) •
 [Training](#training) •
 [Evaluation](#evaluation) •
 [Results](#results) •
-[Citation](#citation)
+[Citation](#citation) •
+[License](#license-and-data-usage)
 
 </div>
 
@@ -80,7 +83,8 @@ python train_cross.py \
 
 ```bash
 python train_reranker.py  --model_type=cross_attn \
-                          --n_layers=1 --d_modal=128 \
+                          --n_layers=1 \
+                          --d_modal=128 \
                           --n_heads=4 \
                           --loss_name=listwise \
                           --max_cands=50 
@@ -221,13 +225,46 @@ Recall@1 (%) on the standard cross-modal benchmarks, the condition-specific SVOX
   </tbody>
 </table>
 
+See the [paper](https://arxiv.org/abs/2611.34877) for the full comparison.
+
+## Citation
+
+If you find this work useful, please cite:
+
+```bibtex
+@article{idan2026crossplace,
+  title={Towards Closing the Performance Gap in Cross-Modal Place Recognition},
+  author={Idan, Ofer and Badur, Dan and Shavit, Yoli},
+  journal={arXiv preprint arXiv:2611.34877},
+  year={2026}
+}
+```
+
+## License and Data Usage
+
+This repository contains two kinds of assets: source code and original text annotations. It does **not** redistribute any images.
+
+| Component | License | Notes |
+| --- | --- | --- |
+| **Source code** | [LICENSE](LICENSE) | |
+| **Text annotations** | [CC BY 4.0](LICENSE-DATA) | Original work by the authors (`datasets/descriptions_extended.zip`) |
+
+### Third-party datasets
+
+This repository provides text annotations for the datasets below but does not redistribute their images. Users must obtain the images from the original sources and comply with their licenses.
+
+| Dataset | Original license | Status |
+| --- | --- | --- |
+| **SF-XL** | [MIT](https://github.com/gmberton/CosPlace/blob/main/LICENSE) | Referenced |
+| **SVOX** | Queries: [Oxford RobotCar](https://robotcar-dataset.robots.ox.ac.uk/), [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/); database: [Google Street View terms](https://www.google.com/permissions/geoguidelines/) | Referenced |
 
 ## Acknowledgements
 
 This repository builds on several excellent open-source projects:
 
 - [LaVPR](https://github.com/oferidan1/LaVPR): text descriptions for the major VPR datasets, which this work builds on.
-- [MixVPR](https://github.com/amaralibey/MixVPR): state-of-the-art VPR architecture.
+- [DINOv2](https://github.com/facebookresearch/dinov2): pretrained vision backbone.
 - [GSV-Cities](https://github.com/amaralibey/gsv-cities): large-scale VPR training dataset.
+- [CosPlace](https://github.com/gmberton/CosPlace): the SF-XL dataset used for city-scale evaluation.
+- [VPR-datasets-downloader](https://github.com/gmberton/VPR-datasets-downloader): download and formatting of the SVOX dataset.
 - [VPR-methods-evaluation](https://github.com/gmberton/VPR-methods-evaluation): standardized VPR evaluation framework.
-
