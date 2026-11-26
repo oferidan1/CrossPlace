@@ -246,7 +246,7 @@ This repository contains two kinds of assets: source code and original text anno
 | Component | License | Notes |
 | --- | --- | --- |
 | **Source code** | [LICENSE](LICENSE) | |
-| **Text annotations** | [CC BY 4.0](LICENSE-DATA) | Original work by the authors (`datasets/descriptions_extended.zip`) |
+| **Text annotations** | [CC BY 4.0](LICENSE) | Original work by the authors (`datasets/descriptions_extended.zip`) |
 
 ### Third-party datasets
 
