@@ -5,6 +5,7 @@
 ### Towards Closing the Performance Gap in Cross-Modal Place Recognition
 
 [![arXiv](https://img.shields.io/badge/arXiv-2611.34877-b31b1b.svg)](https://arxiv.org/abs/2611.34877)
+[![Hugging Face](https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-yellow)](https://huggingface.co/oferidan1/CrossPlace)
 
 [Overview](#overview) •
 [Setup](#setup) •
@@ -82,11 +83,13 @@ python train_cross.py \
 ### Stage 2: Reranker
 
 ```bash
-python train_reranker.py  --model_type=cross_attn \
-                          --n_layers=1 --d_modal=128 \
-                          --n_heads=4 \
-                          --loss_name=listwise \
-                          --max_cands=50 
+python train_reranker.py \
+    --model_type=cross_attn \
+    --n_layers=1 \
+    --d_modal=128 \
+    --n_heads=4 \
+    --loss_name=listwise \
+    --max_cands=50
 ```
 
 Checkpoints and logs are saved automatically to the `logs/` directory.
@@ -97,9 +100,13 @@ Checkpoints and logs are saved automatically to the `logs/` directory.
 
 | Model | Backbone | Embedding dim | Download |
 | --- | --- | --- | --- |
-| CrossPlace | DINOv2 + BGE-L | 768 | [cross_place.ckpt](CHECKPOINT_LINK) |
+| CrossPlace | DINOv2 + BGE-L | 768 | [🤗 cross_place.ckpt](https://huggingface.co/oferidan1/CrossPlace/blob/main/cross_place.ckpt) |
 
-Place the checkpoint in `checkpoints/`.
+Download the checkpoint into `checkpoints/`:
+
+```bash
+hf download oferidan1/CrossPlace cross_place.ckpt --local-dir checkpoints
+```
 
 ### Running the evaluation
 
