@@ -83,8 +83,7 @@ python train_cross.py \
 
 ```bash
 python train_reranker.py  --model_type=cross_attn \
-                          --n_layers=1 \
-                          --d_modal=128 \
+                          --n_layers=1 --d_modal=128 \
                           --n_heads=4 \
                           --loss_name=listwise \
                           --max_cands=50 
@@ -98,7 +97,7 @@ Checkpoints and logs are saved automatically to the `logs/` directory.
 
 | Model | Backbone | Embedding dim | Download |
 | --- | --- | --- | --- |
-| CrossPlace | DINOv2 | 768 | [cross_place.ckpt](CHECKPOINT_LINK) |
+| CrossPlace | DINOv2 + BGE-L | 768 | [cross_place.ckpt](CHECKPOINT_LINK) |
 
 Place the checkpoint in `checkpoints/`.
 
@@ -264,6 +263,7 @@ This repository builds on several excellent open-source projects:
 
 - [LaVPR](https://github.com/oferidan1/LaVPR): text descriptions for the major VPR datasets, which this work builds on.
 - [DINOv2](https://github.com/facebookresearch/dinov2): pretrained vision backbone.
+- [BGE](https://github.com/FlagOpen/FlagEmbedding): pretrained text encoder (BGE-L).
 - [GSV-Cities](https://github.com/amaralibey/gsv-cities): large-scale VPR training dataset.
 - [CosPlace](https://github.com/gmberton/CosPlace): the SF-XL dataset used for city-scale evaluation.
 - [VPR-datasets-downloader](https://github.com/gmberton/VPR-datasets-downloader): download and formatting of the SVOX dataset.
