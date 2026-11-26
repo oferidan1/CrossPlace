@@ -270,7 +270,7 @@ This repository builds on several excellent open-source projects:
 
 - [LaVPR](https://github.com/oferidan1/LaVPR): text descriptions for the major VPR datasets, which this work builds on.
 - [DINOv2](https://github.com/facebookresearch/dinov2): pretrained vision backbone.
-- [BGE](https://github.com/FlagOpen/FlagEmbedding): pretrained text encoder (BGE-L).
+- [BGE-L](https://huggingface.co/BAAI/bge-large-en): pretrained text encoder.
 - [GSV-Cities](https://github.com/amaralibey/gsv-cities): large-scale VPR training dataset.
 - [CosPlace](https://github.com/gmberton/CosPlace): the SF-XL dataset used for city-scale evaluation.
 - [VPR-datasets-downloader](https://github.com/gmberton/VPR-datasets-downloader): download and formatting of the SVOX dataset.
